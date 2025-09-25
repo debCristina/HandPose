@@ -5,8 +5,9 @@
 //  Created by Débora Cristina Silva Ferreira on 25/09/25.
 //
 
-\
+#if canImport(UIKit)
 import Foundation
+import UIKit
 import ARKit
 
 class ARViewController: UIViewController, ARSessionDelegate {
@@ -70,3 +71,5 @@ class ARViewController: UIViewController, ARSessionDelegate {
         }
     }
 }
+#endif
+
