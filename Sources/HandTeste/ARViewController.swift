@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import ARKit
 
+@MainActor
 class ARViewController: UIViewController, ARSessionDelegate {
     private var frameCounter = 0
     private let handPosePredictionInterval = 30
