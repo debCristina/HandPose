@@ -9,7 +9,7 @@ import Foundation
 import Vision
 
 class HandPoseHandler {
-    private let model: HandGestures
+    private let model: HandGestures6
     
     private let handPoseRequest: VNDetectHumanHandPoseRequest  = {
         let request = VNDetectHumanHandPoseRequest()
@@ -20,7 +20,7 @@ class HandPoseHandler {
     init() throws {
         let config = MLModelConfiguration()
         config.computeUnits = .cpuAndGPU
-        self.model = try HandGestures(configuration: config)
+        self.model = try HandGestures6(configuration: config)
     }
     
     func predictHandState(from observation: VNHumanHandPoseObservation) -> (HandState, Double)? {
