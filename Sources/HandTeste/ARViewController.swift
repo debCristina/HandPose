@@ -5,72 +5,111 @@
 //  Created by Débora Cristina Silva Ferreira on 25/09/25.
 //
 
-#if canImport(UIKit)
 import Foundation
-import UIKit
 import ARKit
 
-@MainActor
-class ARViewController: UIViewController, ARSessionDelegate {
+class ARViewController: UIViewController, @MainActor ARSessionDelegate {
+    private var arView: ARSCNView!
+    var showPreview = false
     private var frameCounter = 0
     private let handPosePredictionInterval = 30
+    var currentHandState: HandState = .unknown
+    private var handPoseHandler: HandPoseHandler!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        do {
+            handPoseHandler = try HandPoseHandler()
+        } catch {
+            fatalError("Failed to init HandPoseHandler: \(error)")
+        }
+        
+        setupARView(showPreview: showPreview)
+       
+    }
+    
+    func setupARView(showPreview: Bool) {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized: createARView(showPreview: showPreview)
+            
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { enabled in
+                DispatchQueue.main.async {
+                    if enabled {
+                        self.createARView(showPreview: showPreview)
+                    } else {
+                        print("Camera access denied")
+                    }
+                }
+            }
+        case .denied, .restricted:
+            print("Camera access denied")
+
+        @unknown default:
+            print("Unknown camera authorization status")
+        }
+    }
+    
+    func createARView(showPreview: Bool) {
+        arView = ARSCNView(frame: view.bounds)
+        arView.session.delegate = self
+        
+        if showPreview {
+            view.addSubview(arView)
+        }
+        // generak world tracking
+        
+        let configuration = ARWorldTrackingConfiguration()
+        
+        // enable the front camera
+        if ARFaceTrackingConfiguration.isSupported {
+            let faceTrackingConfig = ARFaceTrackingConfiguration()
+            arView.session.run(faceTrackingConfig)
+        } else {
+            // not supported
+            // show an alert
+            arView.session.run(configuration)
+        }
+    }
+    
     
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         frameCounter += 1
-        let pixelBuffer = frame.capturedImage
         
-        let handPoseRequest = VNDetectHumanHandPoseRequest()
-        handPoseRequest.maximumHandCount = 1
-        handPoseRequest.revision = VNDetectContourRequestRevision1
+        if frameCounter % handPosePredictionInterval != 0 {
+            return
+        }
+        
+        let pixelBuffer = frame.capturedImage
+        let request = handPoseHandler.getRequest()
+        request.revision = VNDetectHumanHandPoseRequestRevision1
         
         let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
         
         do {
-            try handler.perform([handPoseRequest])
-        } catch {
+            try handler.perform([request])
+        }  catch {
             assertionFailure("Human Pose Request failed: \(error.localizedDescription)")
         }
         
-        guard let handPoses = handPoseRequest.results, !handPoses.isEmpty else {
-            // no effects to draw
+        guard let handPoses = request.results, !handPoses.isEmpty else {
             return
         }
         
-        let handObservations = handPoses.first
-        
-        
-        if frameCounter % handPosePredictionInterval == 0 {
-            guard let keypointsMultiArray = try? handObservations!.keypointsMultiArray() else {
-                fatalError("Failed to create key points array")
-            }
-            do {
-                let config = MLModelConfiguration()
-                config.computeUnits = .cpuAndGPU
-                // ML model version setup
-                let model = try HandGestures.init(configuration: config)
-                
-                let handPosePrediction = try model.prediction(poses: keypointsMultiArray)
-                let confidence = handPosePrediction.labelProbabilities[handPosePrediction.label]!
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.thirdLabel.text = "\(self.convertToPercentage(confidence))%"
-                }
-                print("labelProbabilities \(handPosePrediction.labelProbabilities)")
-                
-                if confidence > 0.9 {
-                    print("handPosePrediction: \(handPosePrediction.label)")
-                    renderHandPose(name: handPosePrediction.label)
-                } else {
-                    print("handPosePrediction: \(handPosePrediction.label)")
-                    cleanEmojii()
-                    
-                }
-                
-            } catch let error {
-                print("Failure HandyModel: \(error.localizedDescription)")
-            }
+        if let handObservation = handPoses.first,
+           let (state, _) = handPoseHandler.predictHandState(from: handObservation) {
+            changeHandState(name: state)
+        }
+    }
+    
+    private func changeHandState(name: HandState) {
+        switch name {
+        case .open:
+            currentHandState = .open
+        case .closed:
+            currentHandState = .closed
+        case .unknown:
+            currentHandState = .unknown
         }
     }
 }
-#endif
-
