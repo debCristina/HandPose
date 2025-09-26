@@ -31,4 +31,12 @@ public struct ARViewContainer: UIViewControllerRepresentable {
     public func getCurrentHandState() -> HandState {
         return arViewController.currentHandState
     }
+    
+    public func startCamera() {
+        arViewController.startCamera()
+    }
+    
+    public func stopCamera() {
+        arViewController.stopCamera()
+    }
 }

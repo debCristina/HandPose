@@ -46,6 +46,4 @@ class HandPoseHandler {
     func getRequest() -> VNDetectHumanHandPoseRequest {
         return handPoseRequest
     }
-    
-    
 }

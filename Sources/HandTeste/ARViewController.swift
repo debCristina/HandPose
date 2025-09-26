@@ -50,6 +50,20 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
         }
     }
     
+    func startCamera() {
+        guard arView == nil else { return }
+        
+        createARView(showPreview: self.showPreview)
+    }
+    
+    func stopCamera() {
+        guard let arView = arView else { return }
+        
+        arView.session.pause()
+        arView.removeFromSuperview()
+        self.arView = nil
+    }
+    
     func createARView(showPreview: Bool) {
         arView = ARSCNView(frame: view.bounds)
         arView.session.delegate = self
