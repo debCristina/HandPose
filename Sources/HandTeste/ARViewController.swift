@@ -109,6 +109,8 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
             print("Mão aberta detectada! Confiança")
         case .closed:
             currentHandState = .closed
+            print("Mão fechada detectada! Confiança")
+
         case .unknown:
             currentHandState = .unknown
         }
