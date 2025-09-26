@@ -13,7 +13,7 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     private var arView: ARSCNView!
     var showPreview = false
     private var frameCounter = 0
-    private let handPosePredictionInterval = 30
+    private let handPosePredictionInterval = 20
     var currentHandState: HandState = .unknown
     var onHandStateChanged: ((HandState) -> Void)?
     private var handPoseHandler: HandPoseHandler!
@@ -25,7 +25,6 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
         } catch {
             fatalError("Failed to init HandPoseHandler: \(error)")
         }
-        
         setupARView(showPreview: showPreview)
        
     }
@@ -52,19 +51,6 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
         }
     }
     
-    func startCamera() {
-        guard arView == nil else { return }
-        
-        createARView(showPreview: self.showPreview)
-    }
-    
-    func stopCamera() {
-        guard let arView = arView else { return }
-        
-        arView.session.pause()
-        arView.removeFromSuperview()
-        self.arView = nil
-    }
     
     func createARView(showPreview: Bool) {
         arView = ARSCNView(frame: view.bounds)
