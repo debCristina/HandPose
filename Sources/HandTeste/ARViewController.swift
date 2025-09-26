@@ -106,6 +106,7 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
         switch name {
         case .open:
             currentHandState = .open
+            print("Mão aberta detectada! Confiança")
         case .closed:
             currentHandState = .closed
         case .unknown:
