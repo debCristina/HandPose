@@ -15,6 +15,7 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     private var frameCounter = 0
     private let handPosePredictionInterval = 30
     var currentHandState: HandState = .unknown
+    var onHandStateChanged: ((HandState) -> Void)?
     private var handPoseHandler: HandPoseHandler!
     
     override func viewDidLoad() {
@@ -118,16 +119,16 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     }
     
     private func changeHandState(name: HandState) {
+        currentHandState = name
+        onHandStateChanged?(name)
+        
         switch name {
         case .open:
-            currentHandState = .open
-            print("Mão aberta detectada! Confiança")
+            print("Mão aberta detectada!")
         case .closed:
-            currentHandState = .closed
-            print("Mão fechada detectada! Confiança")
-
+            print("Mão fechada detectada!")
         case .unknown:
-            currentHandState = .unknown
+            break
         }
     }
 }

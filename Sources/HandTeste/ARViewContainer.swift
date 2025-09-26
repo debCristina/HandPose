@@ -12,15 +12,22 @@ import SwiftUI
 
 public struct ARViewContainer: UIViewControllerRepresentable {
     @Binding var showPreview: Bool
+    @Binding var currentHandState: HandState
      let arViewController = ARViewController()
     
     
-    public init(showPreview: Binding<Bool>) {
+    public init(showPreview: Binding<Bool>, currentHandState: Binding<HandState>) {
         self._showPreview = showPreview
+        self._currentHandState = currentHandState
     }
     
     public func makeUIViewController(context: Context) -> some UIViewController {
         arViewController.showPreview = showPreview
+        arViewController.onHandStateChanged = {  newState in
+            DispatchQueue.main.async {
+                self._currentHandState.wrappedValue = newState
+            }
+        }
         return arViewController
     }
     
