@@ -14,6 +14,7 @@ public struct ARViewContainer: UIViewControllerRepresentable {
     @Binding var showPreview: Bool
      let arViewController = ARViewController()
     
+    
     public init(showPreview: Binding<Bool>) {
         self._showPreview = showPreview
     }
