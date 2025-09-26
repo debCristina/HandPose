@@ -12,8 +12,12 @@ import SwiftUI
 
 public struct ARViewContainer: UIViewControllerRepresentable {
     @Binding var showPreview: Bool
-    @Binding var labelText: String
      let arViewController = ARViewController()
+    
+    public init(showPreview: Binding<Bool>) {
+        self._showPreview = showPreview
+    }
+    
     public func makeUIViewController(context: Context) -> some UIViewController {
         arViewController.showPreview = showPreview
         return arViewController
