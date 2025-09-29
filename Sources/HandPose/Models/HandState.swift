@@ -7,8 +7,14 @@
 
 import Foundation
 
+/// `HandState` representa os possíveis estados de uma mão detectada.
 public enum HandState {
+    /// Mão aberta
     case open
+    
+    /// Mão fechada
     case closed
+    
+    ///Estado indefinido ou não reconheciedo
     case unknown
 }
