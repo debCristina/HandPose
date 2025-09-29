@@ -15,7 +15,7 @@ public class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     private var frameCounter = 0
     private let handPosePredictionInterval = 20
     public var currentHandState: HandState = .unknown
-    var onHandStateChanged: ((HandState) -> Void)?
+    public var onHandStateChanged: ((HandState) -> Void)?
     private var handPoseHandler: HandPoseHandler!
     
     public override func viewDidLoad() {
