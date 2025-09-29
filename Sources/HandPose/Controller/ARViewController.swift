@@ -9,7 +9,7 @@ import Foundation
 import ARKit
 
 
-class ARViewController: UIViewController, @MainActor ARSessionDelegate {
+public class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     private var arView: ARSCNView!
     public var showPreview = false
     private var frameCounter = 0
