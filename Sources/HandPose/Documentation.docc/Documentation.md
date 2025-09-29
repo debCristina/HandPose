@@ -1,4 +1,4 @@
-# ``HandTeste``
+# ``HandPose``
 
 HandPose é um pacote Swift para detecção e classificação de gestos de mão em tempo real, utilizando Vision e um modelo Core ML pré-treinado. Ele identifica se a mão está aberta ou fechada e fornece o nível de confiança da predição, permitindo integração rápida em aplicações iOS sem a necessidade de treinar modelos personalizados.
 

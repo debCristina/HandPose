@@ -1,6 +1,5 @@
 //
 //  File.swift
-//  HandTeste
 //
 //  Created by Débora Cristina Silva Ferreira on 25/09/25.
 //

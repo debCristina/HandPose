@@ -11,14 +11,14 @@ import ARKit
 
 class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     private var arView: ARSCNView!
-    var showPreview = false
+    public var showPreview = false
     private var frameCounter = 0
     private let handPosePredictionInterval = 20
-    var currentHandState: HandState = .unknown
+    public var currentHandState: HandState = .unknown
     var onHandStateChanged: ((HandState) -> Void)?
     private var handPoseHandler: HandPoseHandler!
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         do {
             handPoseHandler = try HandPoseHandler()
@@ -75,7 +75,7 @@ class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     }
     
     
-    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+    public func session(_ session: ARSession, didUpdate frame: ARFrame) {
         frameCounter += 1
         
         if frameCounter % handPosePredictionInterval != 0 {
