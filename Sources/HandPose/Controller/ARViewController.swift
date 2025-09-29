@@ -12,7 +12,7 @@ import Vision
 
 
 public class ARViewController: UIViewController, @MainActor ARSessionDelegate {
-    private var arView: ARSCNView!
+    public var arView: ARSCNView!
     public var showPreview = false
     private var frameCounter = 0
     private let handPosePredictionInterval = 20
