@@ -7,6 +7,8 @@
 
 import Foundation
 import ARKit
+import AVFoundation
+import Vision
 
 
 public class ARViewController: UIViewController, @MainActor ARSessionDelegate {
@@ -17,6 +19,18 @@ public class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     public var currentHandState: HandState = .unknown
     public var onHandStateChanged: ((HandState) -> Void)?
     private var handPoseHandler: HandPoseHandler!
+    public var cameraFrame: CGRect
+
+    public init(cameraFrame: CGRect, showPreview: Bool) {
+        self.cameraFrame = cameraFrame
+        self.showPreview = showPreview
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +40,6 @@ public class ARViewController: UIViewController, @MainActor ARSessionDelegate {
             fatalError("Failed to init HandPoseHandler: \(error)")
         }
         setupARView(showPreview: showPreview)
-       
     }
     
     func setupARView(showPreview: Bool) {
@@ -53,23 +66,19 @@ public class ARViewController: UIViewController, @MainActor ARSessionDelegate {
     
     
     func createARView(showPreview: Bool) {
-        arView = ARSCNView(frame: view.bounds)
+        
+        arView = ARSCNView(frame: cameraFrame)
         arView.session.delegate = self
         
         if showPreview {
             view.addSubview(arView)
         }
-        // generak world tracking
         
         let configuration = ARWorldTrackingConfiguration()
-        
-        // enable the front camera
         if ARFaceTrackingConfiguration.isSupported {
             let faceTrackingConfig = ARFaceTrackingConfiguration()
             arView.session.run(faceTrackingConfig)
         } else {
-            // not supported
-            // show an alert
             arView.session.run(configuration)
         }
     }
@@ -118,3 +127,4 @@ public class ARViewController: UIViewController, @MainActor ARSessionDelegate {
         }
     }
 }
+
