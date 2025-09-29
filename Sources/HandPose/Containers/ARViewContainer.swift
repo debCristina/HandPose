@@ -56,9 +56,11 @@ public struct ARViewContainer: UIViewControllerRepresentable {
     /// `currentHandState`: é uma variável que controla o estado atual da mão detectado.
     @Binding var currentHandState: HandState
     
+    var camera = CGRect()
+    
     /// ARViewController responsável pelo funcionamento interno
     /// do reconhecimento de gestos.
-    let arViewController = ARViewController()
+    let arViewController: ARViewController
     
     /// Inicializa um `ARViewContainer` com bindings para SwiftUI.
     ///
@@ -68,6 +70,8 @@ public struct ARViewContainer: UIViewControllerRepresentable {
     public init(showPreview: Binding<Bool>, currentHandState: Binding<HandState>) {
         self._showPreview = showPreview
         self._currentHandState = currentHandState
+        self.arViewController = ARViewController(cameraFrame: camera, showPreview: showPreview.wrappedValue)
+
     }
     
     /// Cria e configura o `ARViewController` para uso em SwiftUI.
